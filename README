@@ -1,0 +1,1 @@
+Example client application that uses Spring to connect to the OAuth2 protected mock ORCID Tier 2 API.
