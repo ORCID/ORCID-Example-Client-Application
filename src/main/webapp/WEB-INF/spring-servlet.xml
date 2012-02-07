@@ -71,7 +71,7 @@
 	<oauth:resource id="orcid" type="authorization_code"
 		clientId="${clientId}"
 		clientSecret="${clientSecret}" accessTokenUri="${accessTokenUri}"
-		userAuthorizationUri="${userAuthorizationUri}" scope="read" />
+		userAuthorizationUri="${userAuthorizationUri}" scope="/orcid-profile/read-protected" />
 
 	<mvc:default-servlet-handler />
 
