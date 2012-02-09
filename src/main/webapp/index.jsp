@@ -49,7 +49,7 @@
       And since this site uses <a href="http://oauth.net">OAuth</a> to access your ORCID info, we will never ask you
       for your ORCID username and password.</p>
 
-    <p>JOPMTS has only two users: "josiah" and "truman".  The password for "josiah" is password is "carberry" and for "truman" the password is "grayson".</p>
+    <p>JOPMTS has only one user, called "josiah".  The password for "josiah" is password is "carberry".</p>
 
     <authz:authorize ifNotGranted="ROLE_USER">
       <p><a href="<c:url value="login.jsp"/>">Login to JOPMTS</a></p>

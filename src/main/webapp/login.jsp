@@ -56,7 +56,7 @@
     <authz:authorize ifNotGranted="ROLE_USER">
       <h1>Login</h1>
 
-      <p>JOPMTS has only two users: "josiah" and "truman".  The password for "josiah" is password is "carberry" and for "truman" the password is "grayson".</p>
+      <p>JOPMTS has only one user, called "josiah".  The password for "josiah" is password is "carberry".</p>
 
       <form action="<c:url value="/login.do"/>" method="post">
         <p><label>Username: <input type='text' name='j_username' value="josiah"></label></p>
