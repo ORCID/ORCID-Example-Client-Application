@@ -1,7 +1,7 @@
 <%--
 
     =============================================================================
-    Copyright (C) 2011 by ORCID
+    Copyright (C) 2011-12 by ORCID
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
