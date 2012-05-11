@@ -23,6 +23,8 @@
  */
 package org.orcid.examples.jopmts;
 
+import java.util.Map;
+
 import org.w3c.dom.Document;
 
 /**
@@ -37,4 +39,28 @@ public interface OrcidService {
      */
     Document getOrcidDocument() throws OrcidException;
 
+    /**
+     * Get the ORCID info for the specified id
+     * 
+     * @param orcid - ID requested
+     * @return XML document containing orcid info
+     */
+    Document getOrcidDocument(String orcid) throws OrcidException;
+
+    /**
+     * Search ORCID data
+     * 
+     * @param searchTerms - field:value pairs for searching
+     * @return XML document containing search results
+     */
+    Document searchOrcid(Map<String, String> searchTerms) throws OrcidException;
+    
+
+    /**
+     * Search ORCID data
+     * 
+     * @param query - string form search query
+     * @return XML document containing search results
+     */
+    Document searchOrcid(String query) throws OrcidException;
 }

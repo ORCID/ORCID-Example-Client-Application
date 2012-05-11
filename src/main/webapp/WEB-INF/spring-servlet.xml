@@ -102,6 +102,7 @@
 
 	<bean id="orcidService" class="org.orcid.examples.jopmts.impl.OrcidServiceImpl">
 		<property name="orcidInfoURL" value="${orcidInfoURL}" />
+		<property name="orcidSearchURL" value="${orcidSearchURL}" />
 		<property name="orcidRestTemplate">
 			<bean class="org.springframework.security.oauth2.client.OAuth2RestTemplate">
 				<constructor-arg ref="orcid" />

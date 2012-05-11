@@ -23,7 +23,10 @@
  */
 package org.orcid.examples.jopmts.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.util.Map;
 
 import javax.xml.transform.dom.DOMSource;
 
@@ -47,12 +50,17 @@ import org.w3c.dom.Document;
 public class OrcidServiceImpl implements OrcidService {
 
     private String orcidInfoURL;
+    private String orcidSearchURL;
 
     private OAuth2RestTemplate orcidRestTemplate;
 
     private OAuth2ClientTokenServices tokenServices;
 
     public Document getOrcidDocument() throws OrcidException {
+    	return getOrcidDocument(null);
+    }
+    
+    public Document getOrcidDocument(String orcid) throws OrcidException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         OAuth2ProtectedResourceDetails resource = orcidRestTemplate.getResource();
         OrcidOAuth2AccessToken token = (OrcidOAuth2AccessToken) tokenServices.getToken(authentication, resource);
@@ -60,7 +68,10 @@ public class OrcidServiceImpl implements OrcidService {
             // go get an access token...
             throw new OAuth2AccessTokenRequiredException(resource);
         }
-        String url = String.format(orcidInfoURL, token.getOrcid());
+        if (orcid == null) {
+        	orcid = token.getOrcid();
+        }
+        String url = String.format(orcidInfoURL, orcid);
         try {
             DOMSource orcidInput = orcidRestTemplate.getForObject(URI.create(url), DOMSource.class);
             return (Document) orcidInput.getNode();
@@ -74,7 +85,28 @@ public class OrcidServiceImpl implements OrcidService {
             clearAuthorizationCode(authentication, resource);
         }
     }
+    
+    public Document searchOrcid(Map<String, String> searchTerms) throws OrcidException {
+    	StringBuilder query = new StringBuilder();
+    	
+    	for (String field: searchTerms.keySet()) {
+    		if (query.length() > 0) query.append(" AND ");
+    		query.append(field + ":" + searchTerms.get(field));
+    	}
+    	return searchOrcid(query.toString());
+    }
 
+    public Document searchOrcid(String query) throws OrcidException {
+    	String url = orcidSearchURL + "?q=" + query;
+    	try {
+    		url = URLEncoder.encode(url, "UTF-8");
+            DOMSource orcidInput = orcidRestTemplate.getForObject(URI.create(url), DOMSource.class);
+            return (Document) orcidInput.getNode();
+    	} catch (UnsupportedEncodingException uee) {
+    		throw new OrcidException(uee.getLocalizedMessage());
+    	}
+    }
+    
     private void clearAuthorizationCode(Authentication authentication, OAuth2ProtectedResourceDetails resource) {
         OAuth2SecurityContext oauthContext = OAuth2SecurityContextHolder.getContext();
         if (oauthContext != null) {
@@ -82,12 +114,16 @@ public class OrcidServiceImpl implements OrcidService {
         }
     }
 
-    public void setOrcidInfoURL(String sparklrPhotoListURL) {
-        this.orcidInfoURL = sparklrPhotoListURL;
+    public void setOrcidInfoURL(String infoURL) {
+        this.orcidInfoURL = infoURL;
+    }
+    
+    public void setOrcidSearchURL(String searchURL) {
+    	this.orcidSearchURL = searchURL;
     }
 
-    public void setOrcidRestTemplate(OAuth2RestTemplate sparklrRestTemplate) {
-        this.orcidRestTemplate = sparklrRestTemplate;
+    public void setOrcidRestTemplate(OAuth2RestTemplate template) {
+        this.orcidRestTemplate = template;
     }
 
     public void setTokenServices(OAuth2ClientTokenServices tokenServices) {
