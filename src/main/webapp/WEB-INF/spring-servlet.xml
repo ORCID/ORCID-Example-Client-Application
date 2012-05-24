@@ -109,5 +109,7 @@
 		</property>
 		<property name="tokenServices" ref="oauth2TokenServices" />
 	</bean>
+	
+	<bean name="sslConfig" class="org.orcid.examples.jopmts.impl.SSLConfig" />
 
 </beans>
