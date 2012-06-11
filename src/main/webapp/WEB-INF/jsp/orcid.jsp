@@ -45,16 +45,74 @@
         <div id="content">
             <h1>Your ORCID info</h1>
             <div>
+                ORCID:
+                <c:out value="${orcid}" />
+            </div>
+            <div>
                 Name:
                 <c:out value="${full_name}" />
+                /
+                <c:out value="${family_name}" />
+                ,
+                <c:out value="${given_names}" />
+                /
+                <c:out value="${vocative_name}" />
+            </div>
+            <div>
+                Other names
+                <c:forEach items="${otherNames}" var="name">: <c:out value="${name}" />
+                </c:forEach>
             </div>
             <div>
                 Email:
                 <c:out value="${email}" />
             </div>
             <div>
+                URLs
+                <c:forEach items="${personalUrls}" var="url">: <a href="<c:url value="${url}"/>"><c:out value="${url}" /></a>
+                </c:forEach>
+            </div>
+            <div>
                 Institution:
                 <c:out value="${institution_name}" />
+            </div>
+            <div>
+                Affiliated with:
+                <ul>
+                    <c:forEach items="${affiliateInstitutionNames}" var="instName">
+                        <li><c:out value="${instName}" /></li>
+                    </c:forEach>
+                </ul>
+            </div>
+            <div>
+                Previous institutions:
+                <ul>
+                    <c:forEach items="${pastInstitutionNames}" var="instName">
+                        <li><c:out value="${instName}" /></li>
+                    </c:forEach>
+                </ul>
+            </div>
+
+            <table>
+                <caption>Works</caption>
+                <c:forEach items="${works}" var="work">
+                    <tr>
+                        <td width="80%"><c:out value="${work.title}" /></td>
+                        <td width="8%">(<c:out value="${work.year}" />)
+                        </td>
+                        <td width="12%"><a href="<c:url value="${work.workpage}"/>">More Details</a></td>
+                    </tr>
+                </c:forEach>
+            </table>
+            <div>
+                <form action="/jopmts/orcid/record">
+                    Find a record by ORCID: <input name="orcid" type="text" />
+                </form>
+            </div>
+            <div>
+                <form action="/jopmts/orcid/search">
+                    Search ORCID records (for text anywhere in the record): <input name="text" type="text" />
+                </form>
             </div>
         </div>
 
