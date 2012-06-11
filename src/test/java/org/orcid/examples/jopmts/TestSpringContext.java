@@ -36,8 +36,7 @@ public class TestSpringContext {
 
     @Test
     public void testLoadContext() throws Exception {
-        GenericXmlApplicationContext context = new GenericXmlApplicationContext(new FileSystemResource(
-                "src/main/webapp/WEB-INF/spring-servlet.xml"));
+        GenericXmlApplicationContext context = new GenericXmlApplicationContext(new FileSystemResource("src/main/webapp/WEB-INF/spring-servlet.xml"));
         context.close();
     }
 
