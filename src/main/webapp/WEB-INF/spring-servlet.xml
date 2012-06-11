@@ -1,115 +1,121 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
-
-    =============================================================================
-    Copyright (C) 2011-12 by ORCID
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in
-    all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-    THE SOFTWARE.
-    =============================================================================
-
--->
+<!-- ============================================================================= 
+    Copyright (C) 2011-12 by ORCID Permission is hereby granted, free of charge, 
+    to any person obtaining a copy of this software and associated documentation 
+    files (the "Software"), to deal in the Software without restriction, including 
+    without limitation the rights to use, copy, modify, merge, publish, distribute, 
+    sublicense, and/or sell copies of the Software, and to permit persons to 
+    whom the Software is furnished to do so, subject to the following conditions: 
+    The above copyright notice and this permission notice shall be included in 
+    all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED 
+    "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT 
+    NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
+    PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
+    BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION 
+    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH 
+    THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. ============================================================================= -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:sec="http://www.springframework.org/schema/security" xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
-	xsi:schemaLocation="http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:sec="http://www.springframework.org/schema/security"
+    xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
+    xsi:schemaLocation="http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
 		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+>
 
-	<bean id="propertyConfigurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
-		<property name="location" value="classpath:/orcid.properties" />
-	</bean>
+    <bean id="propertyConfigurer"
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+    >
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+        <property name="location" value="classpath:/orcid.properties" />
+    </bean>
 
-	<http access-denied-page="/login.jsp"
-		xmlns="http://www.springframework.org/schema/security">
-		<intercept-url pattern="/orcid-api/**" access="ROLE_USER" />
-		<intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+    <http access-denied-page="/login.jsp"
+        xmlns="http://www.springframework.org/schema/security"
+    >
+        <intercept-url pattern="/orcid-api/**" access="ROLE_USER" />
+        <intercept-url pattern="/**"
+            access="IS_AUTHENTICATED_ANONYMOUSLY" />
 
-		<form-login authentication-failure-url="/login.jsp"
-			default-target-url="/index.jsp" login-page="/login.jsp"
-			login-processing-url="/login.do" />
-		<logout logout-success-url="/index.jsp" logout-url="/logout.do" />
-		<anonymous />
-	</http>
-	
-	<authentication-manager
-		xmlns="http://www.springframework.org/schema/security">
-		<authentication-provider>
-			<user-service>
-				<user name="josiah" password="carberry" authorities="ROLE_USER" />
-				<user name="truman" password="grayson" authorities="ROLE_USER" />
-			</user-service>
-		</authentication-provider>
-	</authentication-manager>
+        <form-login authentication-failure-url="/login.jsp"
+            default-target-url="/index.jsp" login-page="/login.jsp"
+            login-processing-url="/login.do" />
+        <logout logout-success-url="/index.jsp" logout-url="/logout.do" />
+        <anonymous />
+    </http>
 
-	<!--apply the oauth client context -->
-	<oauth:client token-services-ref="oauth2TokenServices" redirect-on-error="${redirectOnError:false}" serialization-service-ref="oauth2SerializationService" />
-	
-	<bean id="oauth2TokenServices" class="org.springframework.security.oauth2.client.token.InMemoryOAuth2ClientTokenServices" />
-	
-	<bean id="oauth2SerializationService" class="org.orcid.examples.jopmts.impl.OrcidOAuth2SerializationService" />
-	
-	<!--define an oauth 2 resource for orcid -->
-	<oauth:resource id="orcid" type="authorization_code"
-		clientId="${clientId}"
-		clientSecret="${clientSecret}" accessTokenUri="${accessTokenUri}"
-		userAuthorizationUri="${userAuthorizationUri}" scope="/orcid-profile/read-protected" />
+    <authentication-manager
+        xmlns="http://www.springframework.org/schema/security"
+    >
+        <authentication-provider>
+            <user-service>
+                <user name="josiah" password="carberry"
+                    authorities="ROLE_USER" />
+                <user name="truman" password="grayson" authorities="ROLE_USER" />
+            </user-service>
+        </authentication-provider>
+    </authentication-manager>
 
-	<mvc:default-servlet-handler />
+    <!--apply the oauth client context -->
+    <oauth:client token-services-ref="oauth2TokenServices"
+        redirect-on-error="${redirectOnError:false}"
+        serialization-service-ref="oauth2SerializationService" />
 
-	<bean
-		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-		<property name="messageConverters">
-			<bean
-				class="org.springframework.http.converter.BufferedImageHttpMessageConverter" />
-		</property>
-		<property name="order" value="0" />
-	</bean>
+    <bean id="oauth2TokenServices"
+        class="org.springframework.security.oauth2.client.token.InMemoryOAuth2ClientTokenServices" />
 
-	<bean
-		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
-		<property name="order" value="0" />
-	</bean>
+    <bean id="oauth2SerializationService"
+        class="org.orcid.examples.jopmts.impl.OrcidOAuth2SerializationService" />
 
-	<!--Basic application beans. -->
-	<bean id="viewResolver"
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/WEB-INF/jsp/" />
-		<property name="suffix" value=".jsp" />
-	</bean>
+    <!--define an oauth 2 resource for orcid -->
+    <oauth:resource id="orcid" type="authorization_code"
+        clientId="${clientId}" clientSecret="${clientSecret}"
+        accessTokenUri="${accessTokenUri}" userAuthorizationUri="${userAuthorizationUri}"
+        scope="/orcid-profile/read-protected" />
 
-	<bean id="orcidController" class="org.orcid.examples.jopmts.mvc.OrcidController">
-		<property name="orcidService" ref="orcidService" />
-	</bean>
+    <mvc:default-servlet-handler />
 
-	<bean id="orcidService" class="org.orcid.examples.jopmts.impl.OrcidServiceImpl">
-		<property name="orcidInfoURL" value="${orcidInfoURL}" />
-		<property name="orcidRestTemplate">
-			<bean class="org.springframework.security.oauth2.client.OAuth2RestTemplate">
-				<constructor-arg ref="orcid" />
-			</bean>
-		</property>
-		<property name="tokenServices" ref="oauth2TokenServices" />
-	</bean>
-	
-	<bean name="sslConfig" class="org.orcid.examples.jopmts.impl.SSLConfig" />
+    <bean
+        class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"
+    >
+        <property name="messageConverters">
+            <bean
+                class="org.springframework.http.converter.BufferedImageHttpMessageConverter" />
+        </property>
+        <property name="order" value="0" />
+    </bean>
+
+    <bean
+        class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"
+    >
+        <property name="order" value="0" />
+    </bean>
+
+    <!--Basic application beans. -->
+    <bean id="viewResolver"
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+    >
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+    <bean id="orcidController" class="org.orcid.examples.jopmts.mvc.OrcidController">
+        <property name="orcidService" ref="orcidService" />
+    </bean>
+
+    <bean id="orcidService" class="org.orcid.examples.jopmts.impl.OrcidServiceImpl">
+        <property name="orcidInfoURL" value="${orcidInfoURL}" />
+        <property name="orcidRestTemplate">
+            <bean
+                class="org.springframework.security.oauth2.client.OAuth2RestTemplate"
+            >
+                <constructor-arg ref="orcid" />
+            </bean>
+        </property>
+        <property name="tokenServices" ref="oauth2TokenServices" />
+    </bean>
+
+    <bean name="sslConfig" class="org.orcid.examples.jopmts.impl.SSLConfig" />
 
 </beans>
