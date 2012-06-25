@@ -86,7 +86,7 @@ public class OrcidProfile extends OrcidClientModel {
         for (int i = 0; i < works.getLength(); i++) {
         	Node publication = works.item(i);
         	Model pubModel = new OrcidWork(publication, xpath);
-        	pubModel.addAttribute("workpage", "/orcid/work?workNum=" + i);
+        	pubModel.addAttribute("workNum", Integer.toString(i));
         	pubList.add(pubModel);
         }
 		return pubList;

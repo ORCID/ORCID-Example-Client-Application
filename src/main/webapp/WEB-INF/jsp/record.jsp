@@ -100,7 +100,7 @@
                         <td width="80%"><c:out value="${work.title}" /></td>
                         <td width="8%">(<c:out value="${work.year}" />)
                         </td>
-                        <td width="12%"><a href="<c:url value="/orcid/work?workNum=${work.workNum}"/>">More Details</a></td>
+                        <td width="12%"><a href="<c:url value="/orcid/record/work?orcid=${orcid}&workNum=${work.workNum}"/>">More Details</a></td>
                     </tr>
                 </c:forEach>
             </table>

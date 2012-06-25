@@ -102,6 +102,7 @@
 
     <bean id="orcidController" class="org.orcid.examples.jopmts.mvc.OrcidController">
         <property name="orcidService" ref="orcidService" />
+        <property name="orcidServicePublic" ref="orcidServicePublic" />
     </bean>
 
     <bean id="orcidService" class="org.orcid.examples.jopmts.impl.OrcidServiceImpl">
@@ -115,6 +116,11 @@
             </bean>
         </property>
         <property name="tokenServices" ref="oauth2TokenServices" />
+    </bean>
+    
+    <bean id="orcidServicePublic" class="org.orcid.examples.jopmts.impl.OrcidServicePublicImpl">
+        <property name="orcidInfoURL" value="${orcidPublicInfoURL}" />
+        <property name="orcidSearchURL" value="${orcidPublicSearchURL}" />
     </bean>
 
     <bean name="sslConfig" class="org.orcid.examples.jopmts.impl.SSLConfig" />
