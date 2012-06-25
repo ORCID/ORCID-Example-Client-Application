@@ -53,15 +53,20 @@ import org.w3c.dom.Document;
  */
 @Controller
 public class OrcidController {
-    private OrcidService orcidService;
+    private OrcidService tier1Service;
+    private OrcidService tier2Service;
 
     public void setOrcidService(OrcidService orcidService) {
-        this.orcidService = orcidService;
+        this.tier2Service = orcidService;
+    }
+    
+    public void setOrcidServicePublic(OrcidService orcidService) {
+        this.tier1Service = orcidService;
     }
 
     @RequestMapping("/orcid/info")
     public String orcidInfo(Model model) throws Exception {
-        Document orcidDocument = orcidService.getOrcidDocument();
+        Document orcidDocument = tier2Service.getOrcidDocument();
         model.addAttribute("full_orcid_profile", documentXml(orcidDocument));
         
         XPath xpath = createXPath();
@@ -70,22 +75,12 @@ public class OrcidController {
         return "orcid";
     }
     
-    @RequestMapping("/orcid/record")
-    public String orcidRecord(@RequestParam("orcid") String orcid, Model model) throws Exception {
-        Document orcidDocument = orcidService.getOrcidDocument(orcid);
-        model.addAttribute("full_orcid_profile", documentXml(orcidDocument));
-        
-        XPath xpath = createXPath();
-        model.mergeAttributes(new OrcidProfile(orcidDocument, xpath));
-        
-        return "orcid";
-    }
     
     @RequestMapping("/orcid/search")
     public String orcidSearch(@RequestParam("text") String text, Model model) throws Exception {
     	Map<String, String> searchTerms = new HashMap<String,String>();
     	searchTerms.put("text", text);
-        Document orcidDocument = orcidService.searchOrcid(searchTerms);
+        Document orcidDocument = tier1Service.searchOrcid(searchTerms);
         
         XPath xpath = createXPath();
         model.mergeAttributes(new OrcidSearchResults(orcidDocument, xpath));
@@ -111,7 +106,7 @@ public class OrcidController {
 
     @RequestMapping("/orcid/work")
     public String workInfo(@RequestParam("workNum") int workNum, Model model) throws Exception {
-        Document orcidDocument = orcidService.getOrcidDocument();
+        Document orcidDocument = tier2Service.getOrcidDocument();
         XPath xpath = createXPath();
         List<Model> pubs = OrcidProfile.parsePublications(xpath, orcidDocument);
         model.mergeAttributes(pubs.get(workNum).asMap());
@@ -120,7 +115,37 @@ public class OrcidController {
     
     @RequestMapping("/orcid/author")
     public String authorInfo(@RequestParam("workNum") int workNum, @RequestParam("authorNum") int authorNum, Model model) throws Exception {
-        Document orcidDocument = orcidService.getOrcidDocument();
+        Document orcidDocument = tier2Service.getOrcidDocument();
+        XPath xpath = createXPath();
+        List<Model> pubs = OrcidProfile.parsePublications(xpath, orcidDocument);
+        List<Model> authors = (List<Model>) pubs.get(workNum).asMap().get("authors");
+        model.mergeAttributes(authors.get(authorNum).asMap());
+        return "author";
+    }
+
+    @RequestMapping("/orcid/record")
+    public String orcidRecord(@RequestParam("orcid") String orcid, Model model) throws Exception {
+        Document orcidDocument = tier1Service.getOrcidDocument(orcid);
+        model.addAttribute("full_orcid_profile", documentXml(orcidDocument));
+        
+        XPath xpath = createXPath();
+        model.mergeAttributes(new OrcidProfile(orcidDocument, xpath));
+        
+        return "record";
+    }
+    
+    @RequestMapping("/orcid/record/work")
+    public String workForOrcid(@RequestParam("orcid") String orcid, @RequestParam("workNum") int workNum, Model model) throws Exception {
+        Document orcidDocument = tier1Service.getOrcidDocument(orcid);
+        XPath xpath = createXPath();
+        List<Model> pubs = OrcidProfile.parsePublications(xpath, orcidDocument);
+        model.mergeAttributes(pubs.get(workNum).asMap());
+        return "work";
+    }
+    
+    @RequestMapping("/orcid/record/author")
+    public String authorForOrcid(@RequestParam("orcid") String orcid, @RequestParam("workNum") int workNum, @RequestParam("authorNum") int authorNum, Model model) throws Exception {
+        Document orcidDocument = tier1Service.getOrcidDocument(orcid);
         XPath xpath = createXPath();
         List<Model> pubs = OrcidProfile.parsePublications(xpath, orcidDocument);
         List<Model> authors = (List<Model>) pubs.get(workNum).asMap().get("authors");
