@@ -35,49 +35,50 @@ import org.w3c.dom.Document;
 /**
  * @author Arthur Smith
  * 
- * This implements the OrcidService queries on the Tier-1 API (not
- * requiring OAuth2 authentication)
+ *         This implements the OrcidService queries on the Tier-1 API (not
+ *         requiring OAuth2 authentication)
  */
 public class OrcidServicePublicImpl implements OrcidService {
     private String orcidInfoURL;
     private String orcidSearchURL;
 
     public Document getOrcidDocument() throws OrcidException {
-    	throw new OrcidException("there is no default ORCID to fetch with tier-1");
+        throw new OrcidException("there is no default ORCID to fetch with tier-1");
     }
-    
+
     public Document getOrcidDocument(String orcid) {
         String url = String.format(orcidInfoURL, orcid);
-        
+
         return fetchDocument(url);
     }
-    
+
     public Document searchOrcid(Map<String, String> searchTerms) {
-    	StringBuilder query = new StringBuilder();
-    	
-    	for (String field: searchTerms.keySet()) {
-    		if (query.length() > 0) query.append(" AND ");
-    		query.append(field + ":" + searchTerms.get(field));
-    	}
-    	return searchOrcid(query.toString());
+        StringBuilder query = new StringBuilder();
+
+        for (String field : searchTerms.keySet()) {
+            if (query.length() > 0)
+                query.append(" AND ");
+            query.append(field + ":" + searchTerms.get(field));
+        }
+        return searchOrcid(query.toString());
     }
 
     public Document searchOrcid(String query) {
-    	String url = orcidSearchURL + "?q=" + query;
-    	return fetchDocument(url);
+        String url = orcidSearchURL + "?q=" + query;
+        return fetchDocument(url);
     }
 
-	private Document fetchDocument(String url) {
-		RestTemplate restTemplate = new RestTemplate();
+    private Document fetchDocument(String url) {
+        RestTemplate restTemplate = new RestTemplate();
         DOMSource orcidInput = restTemplate.getForObject(url, DOMSource.class);
         return (Document) orcidInput.getNode();
-	}
+    }
 
     public void setOrcidInfoURL(String infoURL) {
         this.orcidInfoURL = infoURL;
     }
-    
+
     public void setOrcidSearchURL(String searchURL) {
-    	this.orcidSearchURL = searchURL;
+        this.orcidSearchURL = searchURL;
     }
 }

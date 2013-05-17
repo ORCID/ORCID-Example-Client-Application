@@ -42,7 +42,8 @@ public interface OrcidService {
     /**
      * Get the ORCID info for the specified id
      * 
-     * @param orcid - ID requested
+     * @param orcid
+     *            - ID requested
      * @return XML document containing orcid info
      */
     Document getOrcidDocument(String orcid) throws OrcidException;
@@ -50,16 +51,17 @@ public interface OrcidService {
     /**
      * Search ORCID data
      * 
-     * @param searchTerms - field:value pairs for searching
+     * @param searchTerms
+     *            - field:value pairs for searching
      * @return XML document containing search results
      */
     Document searchOrcid(Map<String, String> searchTerms) throws OrcidException;
-    
 
     /**
      * Search ORCID data
      * 
-     * @param query - string form search query
+     * @param query
+     *            - string form search query
      * @return XML document containing search results
      */
     Document searchOrcid(String query) throws OrcidException;
