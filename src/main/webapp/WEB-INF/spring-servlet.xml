@@ -121,6 +121,15 @@
     <bean id="orcidServicePublic" class="org.orcid.examples.jopmts.impl.OrcidServicePublicImpl">
         <property name="orcidInfoURL" value="${orcidPublicInfoURL}" />
         <property name="orcidSearchURL" value="${orcidPublicSearchURL}" />
+        <property name="orcidRestTemplate">
+            <bean class="org.springframework.web.client.RestTemplate">
+                <property name="messageConverters">
+                    <list>
+                        <bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
     </bean>
 
     <bean name="sslConfig" class="org.orcid.examples.jopmts.impl.SSLConfig" />

@@ -57,8 +57,6 @@
     	</c:forEach></ul></div>
     <div></div>
     <div>Publication Date: <c:out value="${year}"/>-<c:out value="${month}"/>-<c:out value="${day}"/></div>
-    <div>Publisher: <c:out value="${publisher}"/></div>
-    <div>Cover Date: <c:out value="${coverDate}"/></div>
     <div>ISBN: <c:out value="${isbn}"/></div>
     <div>ISSN: <c:out value="${issn}"/></div>
     <div>URLs: <c:forEach items="${relatedUrls}" var="url">: <a href="<c:url value="${url}"/>"><c:out value="${url}"/></a></c:forEach></div>    

@@ -23,12 +23,20 @@
  */
 package org.orcid.examples.jopmts.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.transform.dom.DOMSource;
 
 import org.orcid.examples.jopmts.OrcidException;
 import org.orcid.examples.jopmts.OrcidService;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.web.client.HttpMessageConverterExtractor;
+import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 
@@ -39,8 +47,10 @@ import org.w3c.dom.Document;
  *         requiring OAuth2 authentication)
  */
 public class OrcidServicePublicImpl implements OrcidService {
+
     private String orcidInfoURL;
     private String orcidSearchURL;
+    private RestTemplate orcidRestTemplate;
 
     public Document getOrcidDocument() throws OrcidException {
         throw new OrcidException("there is no default ORCID to fetch with tier-1");
@@ -69,8 +79,7 @@ public class OrcidServicePublicImpl implements OrcidService {
     }
 
     private Document fetchDocument(String url) {
-        RestTemplate restTemplate = new RestTemplate();
-        DOMSource orcidInput = restTemplate.getForObject(url, DOMSource.class);
+        DOMSource orcidInput = orcidRestTemplate.getForObject(url, DOMSource.class);
         return (Document) orcidInput.getNode();
     }
 
@@ -81,4 +90,9 @@ public class OrcidServicePublicImpl implements OrcidService {
     public void setOrcidSearchURL(String searchURL) {
         this.orcidSearchURL = searchURL;
     }
+
+    public void setOrcidRestTemplate(RestTemplate orcidRestTemplate) {
+        this.orcidRestTemplate = orcidRestTemplate;
+    }
+
 }
