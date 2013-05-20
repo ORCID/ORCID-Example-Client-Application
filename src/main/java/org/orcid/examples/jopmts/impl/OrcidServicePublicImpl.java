@@ -23,20 +23,12 @@
  */
 package org.orcid.examples.jopmts.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.transform.dom.DOMSource;
 
 import org.orcid.examples.jopmts.OrcidException;
 import org.orcid.examples.jopmts.OrcidService;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.ClientHttpRequest;
-import org.springframework.web.client.HttpMessageConverterExtractor;
-import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 
