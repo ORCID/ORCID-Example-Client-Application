@@ -43,6 +43,7 @@
             login-processing-url="/login.do" />
         <logout logout-success-url="/index.jsp" logout-url="/logout.do" />
         <anonymous />
+        <custom-filter ref="oauth2ClientFilter" after="EXCEPTION_TRANSLATION_FILTER" />
     </http>
 
     <authentication-manager
@@ -58,22 +59,14 @@
     </authentication-manager>
 
     <!--apply the oauth client context -->
-    <oauth:client token-services-ref="oauth2TokenServices"
-        redirect-on-error="${redirectOnError:false}"
-        serialization-service-ref="oauth2SerializationService" />
-
-    <bean id="oauth2TokenServices"
-        class="org.springframework.security.oauth2.client.token.InMemoryOAuth2ClientTokenServices" />
-
-    <bean id="oauth2SerializationService"
-        class="org.orcid.examples.jopmts.impl.OrcidOAuth2SerializationService" />
+    <oauth:client id="oauth2ClientFilter"/>
 
     <!--define an oauth 2 resource for orcid -->
     <oauth:resource id="orcid" type="authorization_code"
-        clientId="${clientId}" clientSecret="${clientSecret}"
-        accessTokenUri="${accessTokenUri}" userAuthorizationUri="${userAuthorizationUri}"
-        scope="/orcid-profile/read-limited" />
-
+        client-id="${clientId}" client-secret="${clientSecret}"
+        access-token-uri="${accessTokenUri}" user-authorization-uri="${userAuthorizationUri}"
+        scope="/orcid-profile/read-limited" pre-established-redirect-uri="${preEstablishedRedirectUri}"/>
+        
     <mvc:default-servlet-handler />
 
     <bean
@@ -109,13 +102,14 @@
         <property name="orcidInfoURL" value="${orcidInfoURL}" />
         <property name="orcidSearchURL" value="${orcidSearchURL}" />
         <property name="orcidRestTemplate">
-            <bean
-                class="org.springframework.security.oauth2.client.OAuth2RestTemplate"
-            >
-                <constructor-arg ref="orcid" />
-            </bean>
+            <oauth:rest-template resource="orcid">
+                <property name="messageConverters">
+                    <list>
+                        <bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
+                    </list>
+                </property>
+            </oauth:rest-template>
         </property>
-        <property name="tokenServices" ref="oauth2TokenServices" />
     </bean>
     
     <bean id="orcidServicePublic" class="org.orcid.examples.jopmts.impl.OrcidServicePublicImpl">
